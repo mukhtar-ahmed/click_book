@@ -3,8 +3,26 @@ version: '3'
 services:
   web:
     build: .
-    command: sh -c "poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    env_file:
+      - .env
     ports:
-      - 8000:8000
+      - "8000:8000"
     volumes:
-      - .:/app
+      - .:/app:cached
+    depends_on:
+      - db
+    environment:
+      DB_URL: postgresql://postgres:mukhtar%408041@db:5432/Click_Book
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mukhtar@8041
+      POSTGRES_DB: Click_Book
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

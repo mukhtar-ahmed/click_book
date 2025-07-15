@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 RUN apt-get update && apt-get install -y curl && \
     curl -sSL https://install.python-poetry.org | python3 - && \
@@ -7,9 +7,14 @@ RUN apt-get update && apt-get install -y curl && \
 
 WORKDIR /app
 
+# Only copy necessary files first for faster rebuilds
+COPY pyproject.toml poetry.lock* /app/
+
+# ✅ Fixed here (no duplicate RUN)
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-root --no-interaction --no-ansi
+
+# Now bring in the full project
 COPY . /app
 
-RUN poetry install --no-root
-
-CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
