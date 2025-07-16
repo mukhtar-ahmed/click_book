@@ -1,6 +1,7 @@
-env/
 __pycache__/
-
-*.env
-*.env.*
-env.*
+*.pyc
+*.pyo
+*.pyd
+.env
+.git
+.venv/

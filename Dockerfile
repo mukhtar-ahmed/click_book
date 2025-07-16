@@ -1,20 +1,27 @@
-FROM python:3.13-slim
+#Python official image
+FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y curl && \
-    curl -sSL https://install.python-poetry.org | python3 - && \
-    ln -s /root/.local/bin/poetry /usr/local/bin/poetry && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
+# Working Dir
 WORKDIR /app
 
-# Only copy necessary files first for faster rebuilds
-COPY pyproject.toml poetry.lock* /app/
+# Install system dependencies
+# RUN apt-get update && apt-get install -y netcat gcc
+RUN apt-get update && apt-get install -y netcat-openbsd gcc
 
-# ✅ Fixed here (no duplicate RUN)
-RUN poetry config virtualenvs.create false && \
-    poetry install --no-root --no-interaction --no-ansi
 
-# Now bring in the full project
-COPY . /app
+# Copy project file
+COPY . .
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Install poetry
+RUN pip install poetry
+
+# Install dependencies
+# RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false && poetry install --no-root --no-interaction --no-ansi
+
+
+# Expose port
+EXPOSE 8000
+
+# Startup command
+CMD [ "uvicorn", "app:main.app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
