@@ -1,0 +1,46 @@
+# Ignore Python cache and build files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Ignore virtual environment folders
+.venv/
+env/
+venv/
+
+# Ignore dotenv environment files
+.env
+.env.*
+
+# Ignore local development artifacts
+*.log
+*.sqlite3
+*.db
+*.pid
+*.swp
+
+# Ignore editor-specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore compiled files
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Ignore Docker files not needed in source control
+*.tar
+*.bak
+docker-compose.override.yml
+
+# Ignore PostgreSQL and pgAdmin volumes (optional if using Docker volumes)
+pgadmin_data/
+postgres_data/

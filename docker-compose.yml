@@ -10,6 +10,16 @@ services:
     env_file: .env
     ports:
       - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_con
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kh.mukhtar60@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "8080:80"
     
   web:
     build: .
@@ -24,6 +34,7 @@ services:
       - .:/app
 volumes:
   postgres_data:
+  pgadmin_data:
 
 
 
