@@ -34,7 +34,10 @@ services:
       - .:/app
 volumes:
   postgres_data:
+    name: click_book_postgres_data
   pgadmin_data:
+    name: click_book_pgadmin_data
+
 
 
 

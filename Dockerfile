@@ -12,6 +12,9 @@ RUN apt-get update && apt-get install -y netcat-openbsd gcc
 # Copy project file
 COPY . .
 
+# Copy project files
+COPY pyproject.toml poetry.lock ./
+
 # Install poetry
 RUN pip install poetry
 
@@ -24,4 +27,4 @@ RUN poetry config virtualenvs.create false && poetry install --no-root --no-inte
 EXPOSE 8000
 
 # Startup command
-CMD [ "uvicorn", "app:main.app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
+CMD [ "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload" ]
