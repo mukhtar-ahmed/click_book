@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.schema.user import UserIn,UserOut
 from app.schema.role import RoleIn,RoleListOut,RoleOut
@@ -8,6 +9,18 @@ from fastapi import HTTPException,status
 from app.logging.logger import logger
 from app.auth.hashing import hash_password,verify_hash_password
 from sqlalchemy.exc import SQLAlchemyError
+from app.core.config import settings
+from jose import jwt
+
+def create_jwt(id:int, email:str,role_id:int, exp:timedelta):
+    payload = {
+        "id":id,
+        "email":email,
+        "role_id":role_id,
+        "exp":datetime.now(timezone.utc) + exp
+    }
+    return jwt.encode(payload,settings.SECERET_KEY,algorithm=settings.ALGORITHM)
+    
 
 def create_role(db:Session, role:RoleIn):
     # Check if role already exist
@@ -80,8 +93,17 @@ def login_user(db:Session,email:str,password:str):
     if not hashed_password:
         logger.warning("User not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND , detail="User not found")
+    # return jwt for login user
+    # - jose
+    # - 
+    token = create_jwt(id=db_user.id,email=db_user.email,role_id=db_user.role_id,exp=timedelta(minutes=30))
+    print(token)
     return APIResponse(
         message='User data featched',
-        data=UserOut.model_validate(db_user)
+        data={
+            'token_type':"bearer",
+            'access_token':token,
+            'user':UserOut.model_validate(db_user)
+        }
     )
     

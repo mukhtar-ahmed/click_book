@@ -9,6 +9,8 @@ class Settings(BaseSettings):
         env_file='.env',env_ignore_empty=True,extra='ignore'
     )
     DB_URL: str 
+    SECERET_KEY:str
+    ALGORITHM:str
     print("DB_URL from env:", os.environ.get("DB_URL"))
 
 
